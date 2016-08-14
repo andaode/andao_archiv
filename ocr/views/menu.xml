@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="main_view_action" model="ir.actions.act_window">
+			<field name="name">Overview</field>
+			<field name="res_model">ocr.document</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to add an entry in your address book.
+				</p>
+			</field>
+			<field name="context">{'search_default_is_not_read':True}</field>
+		</record>
+
+		<record id="kanban_view_action" model="ir.actions.act_window">
+			<field name="name">Overview Kanban</field>
+			<field name="res_model">ocr.document</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to add an entry in your address book.
+				</p>
+			</field>
+			<field name="context">{'search_default_is_not_read':True}</field>
+
+		</record>
+
+		  <record id="calendar_view_action" model="ir.actions.act_window">
+			<field name="name">Overview Calendar</field>
+			<field name="res_model">ocr.document</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to add an entry in your address book.
+				</p>
+			</field>
+
+		</record>
+
+        <record id="contact_list_action" model="ir.actions.act_window">
+			<field name="name">Contacts</field>
+			<field name="res_model">res.users</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'default_company_id': False}</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to add a user in your address book.
+				</p>
+			</field>
+		</record>
+
+
+       	<menuitem id="ocr_menu" name="Products"/>
+
+		<!-- Properties menu -->
+		<menuitem id="overview_menu" name="Overview" parent="ocr_menu"
+			sequence="100"  />
+			<menuitem id="overview_submenu" name="Overview" parent="overview_menu"
+				sequence="120"  action="main_view_action"  />
+			<menuitem id="kanban_submenu" name="Miniature" parent="overview_menu"
+				sequence="140"  action="kanban_view_action"  />
+			<menuitem id="celendar_submenu" name="Calendar" parent="overview_menu"
+				sequence="150"  action="calendar_view_action"  />
+
+
+        <menuitem id="contact_menu" name="Contacts" parent="ocr_menu"
+			sequence="200"/>
+		<menuitem id="contact_menu_item" name="Contacts"
+			parent="contact_menu" action="contact_list_action" sequence="250"/>
+
+
+		<!--<menuitem id="import_menu" name="Import" parent="ocr_menu"-->
+			<!--sequence="300"/>-->
+		<!--<menuitem id="import_menu_item" name="Upload files"-->
+			<!--parent="contact_menu" action="upload_list_action" sequence="350"/>-->
+
+    </data>
+</openerp>
