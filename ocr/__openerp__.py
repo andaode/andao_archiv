@@ -9,8 +9,8 @@
         This module reads and work with invoices
     """,
 
-    'author': "Grand City Property Ltd.",
-    'website': "http://www.grandcityproperties.com/",
+    'author': "Andrzej Gr",
+    'website': "http://www.andao.de/",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
