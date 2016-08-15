@@ -56,22 +56,22 @@
 		</record>
 
 
-       	<menuitem id="ocr_menu" name="Products"/>
+       	<menuitem id="ocr_menu" name="Unterlagen"/>
 
 		<!-- Properties menu -->
-		<menuitem id="overview_menu" name="Overview" parent="ocr_menu"
+		<menuitem id="overview_menu" name="Übersicht" parent="ocr_menu"
 			sequence="100"  />
-			<menuitem id="overview_submenu" name="Overview" parent="overview_menu"
+			<menuitem id="overview_submenu" name="Übersicht" parent="overview_menu"
 				sequence="120"  action="main_view_action"  />
 			<menuitem id="kanban_submenu" name="Miniature" parent="overview_menu"
 				sequence="140"  action="kanban_view_action"  />
-			<menuitem id="celendar_submenu" name="Calendar" parent="overview_menu"
+			<menuitem id="celendar_submenu" name="Kalendar" parent="overview_menu"
 				sequence="150"  action="calendar_view_action"  />
 
 
-        <menuitem id="contact_menu" name="Contacts" parent="ocr_menu"
+        <menuitem id="contact_menu" name="Kontakte" parent="ocr_menu"
 			sequence="200"/>
-		<menuitem id="contact_menu_item" name="Contacts"
+		<menuitem id="contact_menu_item" name="Kontakte"
 			parent="contact_menu" action="contact_list_action" sequence="250"/>
 
 
