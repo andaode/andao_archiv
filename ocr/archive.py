@@ -4,7 +4,7 @@ from openerp import osv, models, fields, api, tools, _
 import base64
 import datetime
 import logging
-import tesseract
+#import tesseract
 
 #import cv2.cv as cv
 _logger = logging.getLogger(__name__)
@@ -25,10 +25,10 @@ class Document(models.Model):
 
     name = fields.Char(string='Document ID')
     doc_name = fields.Char(string='Document')
-    file_upload = fields.Binary('File', attachment=True, readonly=True)
-    image_small = fields.Binary('Image', attachment=True, readonly=True)
-    image_medium = fields.Binary('Image', attachment=True, readonly=True)
-    image_big = fields.Binary('Image', attachment=True, readonly=True)
+    file_upload = fields.Binary('Datei', attachment=True, readonly=True)
+    image_small = fields.Binary('Bild', attachment=True, readonly=True)
+    image_medium = fields.Binary('Bild', attachment=True, readonly=True)
+    image_big = fields.Binary('Bild', attachment=True, readonly=True)
 
     doc_text = fields.Text()
     owner = fields.Many2one('res.users', ondelete='set null', string="User")
@@ -85,32 +85,32 @@ class Document(models.Model):
         self.env.cr.execute('SELECT count(name) FROM ocr_document WHERE owner = %s', (vals['owner'],))
         amount = str(self.env.cr.fetchall()[0][0] or 0)
         new_number = int(amount) + 1
-        vals['name'] = 'Document ' + str(new_number)
+        vals['name'] = 'Dokumen ' + str(new_number)
         vals['image_small'] = tools.image_resize_image_medium(vals['file_upload'])
         vals['image_medium'] = tools.image_resize_image_small(vals['file_upload'])
         vals['image_big'] = tools.image_resize_image_big(vals['file_upload'])
         vals['is_not_read'] = True
         if not vals['scanned_on'] :
             vals['scanned_on'] = str(datetime.datetime.now())[:10]
-        if not vals['received_on'] :
+        if not vals['received_on']:
             vals['received_on'] = str(datetime.datetime.now())[:10]
 
         vals['image_big'] = tools.image_resize_image_big(vals['file_upload'])
         #self.ocr_file(file)
         if not vals['doc_name']:
-            vals['doc_name'] = 'Document ' + str(new_number)
+            vals['doc_name'] = 'Dokument ' + str(new_number)
         agr = super(Document, self).create(vals)
         return agr
 
-    def ocr_file(self, file):
-        mImgFile = "/Users/andrzej/projects/Octomore/ocr/data/0002AA72.jpg"
-        api = tesseract.TessBaseAPI()
-        api.SetOutputName("outputName");
-        api.Init(".","eng",tesseract.OEM_DEFAULT)
-        api.SetPageSegMode(tesseract.PSM_AUTO)
-        #mImgFile = "eurotext.jpg"
-        pixImage=cv.LoadImage(mImgFile)
-        tesseract.SetCvImage(pixImage, api)
-        outText=api.GetUTF8Text()
-        print("OCR output:\n%s"%outText);
-        api.End()
+    # def ocr_file(self, file):
+    #     mImgFile = "/Users/andrzej/projects/Octomore/ocr/data/0002AA72.jpg"
+    #     api = tesseract.TessBaseAPI()
+    #     api.SetOutputName("outputName");
+    #     api.Init(".","eng",tesseract.OEM_DEFAULT)
+    #     api.SetPageSegMode(tesseract.PSM_AUTO)
+    #     #mImgFile = "eurotext.jpg"
+    #     pixImage=cv.LoadImage(mImgFile)
+    #     tesseract.SetCvImage(pixImage, api)
+    #     outText=api.GetUTF8Text()
+    #     print("OCR output:\n%s"%outText);
+    #     api.End()
