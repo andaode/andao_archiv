@@ -9,12 +9,12 @@ class User(models.Model):
     _inherit = 'res.users'
     _name = 'res.users'
 
-    birthday = fields.Date(string=_("Date of birth"))
-    place_of_birth = fields.Char(string=_("Place of birth"))
-    name_of_birth = fields.Char(string=_("Name of birth"))
-    nationality = fields.Char(string=_("Nationality"))
+    birthday = fields.Date(string=_("Geburtsdatum"))
+    place_of_birth = fields.Char(string=_("Geburtsort"))
+    name_of_birth = fields.Char(string=_("Geburtsname"))
+    nationality = fields.Char(string=_("Nationalität"))
 
-    passport_id = fields.Char(string=_("Passport ID"))
+    passport_id = fields.Char(string=_("Dokument ID"))
 
     customer_id = fields.Char()
 
