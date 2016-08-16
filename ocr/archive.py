@@ -18,67 +18,37 @@ class Document(models.Model):
     _inherit = 'mail.thread'
     _description = 'Archive document'
 
-    def _get_name(self):
-        self.env.cr.execute('SELECT count(name) FROM ocr_document WHERE owner = %s', (self.owner.id,))
-        self.computed_rentable_area = str(self.env.cr.fetchall()[0][0] or 0)
-        return datetime.date(2005, 1, 1)
-
-    name = fields.Char(string='Document ID')
-    doc_name = fields.Char(string='Document')
-    file_upload = fields.Binary('Datei', attachment=True, readonly=True)
+    name = fields.Char(string='Dokument ID')
+    doc_name = fields.Char(string='Dokument')
+    file_upload = fields.Binary('Datei', attachment=True)
     image_small = fields.Binary('Bild', attachment=True, readonly=True)
     image_medium = fields.Binary('Bild', attachment=True, readonly=True)
     image_big = fields.Binary('Bild', attachment=True, readonly=True)
 
     doc_text = fields.Text()
     owner = fields.Many2one('res.users', ondelete='set null', string="User")
-    scanned_on = fields.Date()
-    received_on = fields.Date()
+    scanned_on = fields.Date(string='Gescannt am')
+    received_on = fields.Date(string='Erhalten am')
     is_not_read = fields.Boolean()
     reminder = fields.Date()
 
+    state = fields.Selection([('open', 'Nicht gelesen'), ('closed', 'Gelesen'), ('not_approved', 'Nicht bestätigt'),
+                              ('terminated', 'Verschoben')], 'Status')
     def _resize_image(self):
         self.image = tools.image_resize_image_medium(self.image)
-
-
-############
-    # _columns = {
-    # 'name': fields.char('Name', required=True, translate=True),
-    # 'image': fields.binary("Image",
-    #         help="This field holds the image used as image for our customers, limited to 1024x1024px."),
-    # 'image_medium': fields.function('_get_image', fnct_inv='_set_image',
-    #         string="Image (auto-resized to 128x128):", type="binary", multi="_get_image",
-    #         store={
-    #             'upload_images.tutorial': (lambda self, cr, uid, ids, c={}: ids, ['image'], 10),
-    #         },help="Medium-sized image of the category. It is automatically "\
-    #              "resized as a 128x128px image, with aspect ratio preserved. "\
-    #              "Use this field in form views or some kanban views."),
-    # 'image_small': fields.function('_get_image', fnct_inv='_set_image',
-    #         string="Image (auto-resized to 64x64):", type="binary", multi="_get_image",
-    #         store={
-    #             'upload_images.tutorial': (lambda self, cr, uid, ids, c={}: ids, ['image'], 10),
-    #         },
-    #         help="Small-sized image of the category. It is automatically "\
-    #              "resized as a 64x64px image, with aspect ratio preserved. "\
-    #              "Use this field anywhere a small image is required."),
-    # }
-
-    # def _get_image(self, cr, uid, ids, name, args, context=None):
-    #     result = dict.fromkeys(ids, False)
-    #     for obj in self.browse(cr, uid, ids, context=context):
-    #         result[obj.id] = tools.image_get_resized_images(obj.image)
-    #     return result
-    #
-    # def _set_image(self, cr, uid, id, name, value, args, context=None):
-    #     return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
-############
-
 
 
     @api.multi
     def make_is_read(self):
         self.ensure_one()
         self.is_not_read = not self.is_not_read
+        if self.state == 'closed': self.state == 'open'
+        if self.state == 'open': self.state == 'closed'
+
+    @api.multi
+    def make_approved(self):
+        self.ensure_one()
+        self.state = 'open'
 
     @api.model
     def create(self, vals):
@@ -96,6 +66,7 @@ class Document(models.Model):
             vals['received_on'] = str(datetime.datetime.now())[:10]
 
         vals['image_big'] = tools.image_resize_image_big(vals['file_upload'])
+        vals['state'] = 'not_approved'
         #self.ocr_file(file)
         if not vals['doc_name']:
             vals['doc_name'] = 'Dokument ' + str(new_number)

@@ -9,19 +9,15 @@
             <field name="arch" type="xml">
                 <search>
                     <group string="Group By">
-                        <filter name="received_on" string="By Received" context="{'group_by': 'received_on'}"/>
-                        <filter name="scanned_on" string="By Scanned" context="{'group_by': 'scanned_on'}"/>
+                        <filter name="received_on" string="Nach erhalten" context="{'group_by': 'received_on'}"/>
+                        <filter name="scanned_on" string="Nach dcanned" context="{'group_by': 'scanned_on'}"/>
+                        <filter name="state" string="Nach Status" context="{'group_by': 'state'}"/>
                     </group>
                    <field name="doc_text"/>
                     <field name="doc_name" />
-                    <field name="is_not_read" string="Not readed"/>
-                    <!--<field name="received_on"/>-->
-                   <!--<field name="scanned_on"/>-->
                 </search>
             </field>
         </record>
-
-
 
         <record model="ir.ui.view" id="main_tree_view">
             <field name="name">main_view_view.tree</field>
@@ -31,7 +27,7 @@
                     <field name="doc_name" />
                     <field name="scanned_on" />
                     <field name="received_on"  />
-                    <field name="is_not_read" string="Not read"/>
+                    <field name="state"/>
                     <field name="reminder" />
                 </tree>
             </field>
@@ -43,9 +39,13 @@
             <field name="arch" type="xml">
                 <form string="Main view">
                      <header>
-                        <button name="make_is_read" type="object" string="Read"
+                        <button name="make_is_read" type="object" string="Gelesen/Ungelesen"
                                 class="oe_highlight"/>
-                             </header>
+                        <button name="make_approved" type="object" string="Freigeben"
+                                class="oe_highlight"/>
+
+                         <field name="state" widget="statusbar" statusbar_visible="open,closed,terminated"/>
+                     </header>
 
                     <group string="Info">
 							<group>
@@ -56,15 +56,15 @@
                             <group>
                                 <field name="scanned_on" />
                                 <field name="received_on"  />
-                                <field name="is_not_read" />
+                                <field name="state" />
                             </group>
-
                     </group>
+
                         <field name="file_upload" widget="image" />
                         <field name="image_big" widget="image" />
 
                     <notebook>
-                           <page string="Document text">
+                           <page string="Dokumententext">
                                   <field name="doc_text"  />
                            </page>
                   </notebook>
@@ -72,9 +72,6 @@
 	                    <field name="message_follower_ids" widget="mail_followers"/>
 	                    <field name="message_ids" widget="mail_thread"/>
 	                </div>
-
-
-
                 </form>
             </field>
         </record>
@@ -86,11 +83,9 @@
         <field name="arch" type="xml">
              <kanban>
                 <field name="owner"/>
-                <!--list of field to be loaded -->
                 <field name="scanned_on"/>
                 <templates>
                      <t t-name="kanban-box">
-
                         <div class="oe_product_vignette">
                             <div class="oe_product_img">
                             <a type="edit"><img t-att-src="kanban_image('ocr.document', 'image_small', record.id.value)" class="oe_product_photo"/></a>
@@ -98,9 +93,9 @@
                             <div class="oe_product_desc">
                                 <h4><a type="edit"><field name="doc_name"></field></a></h4>
                                 <ul>
-                                    <li><field name="doc_name"></field></li>
-                                    <li>Scanned on: <field name="scanned_on"></field></li>
-                                    <li>Read: <field name="is_not_read"></field></li>
+                                    <!--<li><field name="doc_name"></field></li>-->
+                                    <li>Gescannt am: <field name="scanned_on"></field></li>
+                                    <li>Status: <field name="state"></field></li>
                                 </ul>
                             </div>
                         </div>
@@ -114,7 +109,6 @@
         </field>
         </record>
 
-
          <record id="reminder_calendar_view" model="ir.ui.view">
                 <field name="name">ocr.calendar</field>
                 <field name="model">ocr.document</field>
@@ -125,7 +119,6 @@
 
                 </field>
         </record>
-
 
     </data>
 </openerp>
