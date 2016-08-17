@@ -11,6 +11,8 @@
 				<p class="oe_view_nocontent_create">
 					Click to add an entry in your address book.
 				</p>
+			<field name="domain">[('state','!=','not_approved')]</field>
+
 			</field>
 			<field name="context">{'search_default_is_not_read':True}</field>
 		</record>
@@ -55,6 +57,19 @@
 			</field>
 		</record>
 
+		  <record id="approve_list_action" model="ir.actions.act_window">
+			<field name="name">Overview</field>
+			<field name="res_model">ocr.document</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to add an entry in your address book.
+				</p>
+			</field>
+			  <field name="domain">[('state','=','not_approved')]</field>
+			<field name="context">{'search_default_is_not_read':True}</field>
+		</record>
 
        	<menuitem id="ocr_menu" name="Unterlagen"/>
 
@@ -69,10 +84,12 @@
 				sequence="150"  action="calendar_view_action"  />
 
 
-        <menuitem id="contact_menu" name="Kontakte" parent="ocr_menu"
+        <menuitem id="admin_menu" name="Administration" parent="ocr_menu"
 			sequence="200"/>
-		<menuitem id="contact_menu_item" name="Kontakte"
-			parent="contact_menu" action="contact_list_action" sequence="250"/>
+		<menuitem id="approve_menu_item" name="Nicht bestätigt"
+			parent="admin_menu" action="approve_list_action" sequence="250"/>
+			<menuitem id="contact_menu_item" name="Kontakte"
+				parent="admin_menu" action="contact_list_action" sequence="270"/>
 
 
 		<!--<menuitem id="import_menu" name="Import" parent="ocr_menu"-->
