@@ -11,9 +11,9 @@
 				<p class="oe_view_nocontent_create">
 					Click to add an entry in your address book.
 				</p>
-			<field name="domain">[('state','!=','not_approved')]</field>
 
 			</field>
+			<field name="domain">[('state','!=','not_approved')]</field>
 			<field name="context">{'search_default_is_not_read':True}</field>
 		</record>
 
