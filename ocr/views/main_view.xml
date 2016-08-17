@@ -40,9 +40,9 @@
                 <form string="Main view">
                      <header>
                         <button name="make_is_read" type="object" string="Gelesen/Ungelesen"
-                                class="oe_highlight"/>
+                                class="oe_highlight" attrs="{'invisible': [('state', '=', 'not_approved')]}"/>
                         <button name="make_approved" type="object" string="Freigeben"
-                                class="oe_highlight"/>
+                                class="oe_highlight"  attrs="{'invisible': [('state', '!=', 'not_approved')]}"/>
 
                          <field name="state" widget="statusbar" statusbar_visible="open,closed,terminated"/>
                      </header>
@@ -56,11 +56,10 @@
                             <group>
                                 <field name="scanned_on" />
                                 <field name="received_on"  />
-                                <field name="state" />
                             </group>
                     </group>
 
-                        <field name="file_upload" widget="image" />
+                        <field name="file_upload" widget="image" class="oe_edit_only"/>
                         <field name="image_big" widget="image" />
 
                     <notebook>
@@ -82,8 +81,8 @@
         <field name="type">kanban</field>
         <field name="arch" type="xml">
              <kanban>
-                <field name="owner"/>
-                <field name="scanned_on"/>
+                <!--<field name="owner"/>-->
+                <!--<field name="scanned_on"/>-->
                 <templates>
                      <t t-name="kanban-box">
                         <div class="oe_product_vignette">
@@ -91,7 +90,7 @@
                             <a type="edit"><img t-att-src="kanban_image('ocr.document', 'image_small', record.id.value)" class="oe_product_photo"/></a>
                             </div>
                             <div class="oe_product_desc">
-                                <h4><a type="edit"><field name="doc_name"></field></a></h4>
+                                <h4><a type="edit" href="#"><field name="doc_name"></field></a></h4>
                                 <ul>
                                     <!--<li><field name="doc_name"></field></li>-->
                                     <li>Gescannt am: <field name="scanned_on"></field></li>

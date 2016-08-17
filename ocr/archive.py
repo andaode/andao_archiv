@@ -20,10 +20,10 @@ class Document(models.Model):
 
     name = fields.Char(string='Dokument ID')
     doc_name = fields.Char(string='Dokument')
-    file_upload = fields.Binary('Datei', attachment=True)
-    image_small = fields.Binary('Bild', attachment=True, readonly=True)
-    image_medium = fields.Binary('Bild', attachment=True, readonly=True)
-    image_big = fields.Binary('Bild', attachment=True, readonly=True)
+    file_upload = fields.Binary(string='Datei', attachment=True)
+    image_small = fields.Binary(string='Bild', attachment=True, readonly=True)
+    image_medium = fields.Binary(string='Bild', attachment=True, readonly=True)
+    image_big = fields.Binary(string='Bild', attachment=True, readonly=True)
 
     doc_text = fields.Text()
     owner = fields.Many2one('res.users', ondelete='set null', string="User")
@@ -32,18 +32,27 @@ class Document(models.Model):
     is_not_read = fields.Boolean()
     reminder = fields.Date()
 
-    state = fields.Selection([('open', 'Nicht gelesen'), ('closed', 'Gelesen'), ('not_approved', 'Nicht bestätigt'),
-                              ('terminated', 'Verschoben')], 'Status')
+    state = fields.Selection([('terminated', 'Verschoben'),('open', 'Nicht gelesen'), ('closed', 'Gelesen'), ('not_approved', 'Nicht bestätigt')
+                              ], 'Status')
     def _resize_image(self):
         self.image = tools.image_resize_image_medium(self.image)
 
+    @api.multi
+    @api.depends('reminder')
+    def _set_state_to_terminated(self):
+        self.ensure_one()
+        if self.reminder:
+            self.state = 'terminated'
+        else:
+            self.state = 'closed'
 
     @api.multi
     def make_is_read(self):
         self.ensure_one()
-        self.is_not_read = not self.is_not_read
-        if self.state == 'closed': self.state == 'open'
-        if self.state == 'open': self.state == 'closed'
+        if self.state != 'open':
+            self.state = 'open'
+        elif self.state == 'open':
+            self.state = 'closed'
 
     @api.multi
     def make_approved(self):
