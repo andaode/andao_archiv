@@ -1,0 +1,10 @@
+from PIL import Image as dupa
+from pytesser import *
+
+image_file = '/home/andy/odoo-8.0/pytesser/phototest.tif'
+im = dupa.open(image_file)
+text = image_to_string(im)
+#text = image_file_to_string(image_file)
+#text = image_file_to_string(image_file, graceful_errors=True)
+print "=====output=======\n"
+print text

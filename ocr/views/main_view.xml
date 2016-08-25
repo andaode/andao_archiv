@@ -59,7 +59,10 @@
                             </group>
                     </group>
 
-                        <field name="file_upload" widget="image" class="oe_edit_only"/>
+                        <field name="file_upload" class="oe_edit_only"/>
+                        <!--<field name="file_upload" widget="image" class="oe_edit_only" filename="image_fname"/>-->
+
+                        <field name="image_fname" invisible="1"/>
                         <field name="image_big" widget="image" />
 
                     <notebook>
