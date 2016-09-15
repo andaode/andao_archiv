@@ -12,13 +12,9 @@
         		<!--</field>-->
 				<!--<field name="name" position="replace"/>-->
 
-				<field name="name" position="after">
-
-					<label for="surname" />
-					<h1>
-						<field name="surname"/>
-					</h1>
-
+				<field name="email" position="before">
+						<label for="surname"/>
+						<h1><field name="surname"/></h1>
 				</field>
 
 
