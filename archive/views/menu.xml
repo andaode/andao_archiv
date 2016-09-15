@@ -4,7 +4,7 @@
 
         <record id="main_view_action" model="ir.actions.act_window">
 			<field name="name">Overview</field>
-			<field name="res_model">ocr.document</field>
+			<field name="res_model">archive.document</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="help" type="html">
@@ -19,7 +19,7 @@
 
 		<record id="kanban_view_action" model="ir.actions.act_window">
 			<field name="name">Overview Kanban</field>
-			<field name="res_model">ocr.document</field>
+			<field name="res_model">archive.document</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">kanban</field>
 			<field name="help" type="html">
@@ -33,7 +33,7 @@
 
 		  <record id="calendar_view_action" model="ir.actions.act_window">
 			<field name="name">Overview Calendar</field>
-			<field name="res_model">ocr.document</field>
+			<field name="res_model">archive.document</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">calendar</field>
 			<field name="help" type="html">
@@ -59,7 +59,7 @@
 
 		  <record id="approve_list_action" model="ir.actions.act_window">
 			<field name="name">Overview</field>
-			<field name="res_model">ocr.document</field>
+			<field name="res_model">archive.document</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="help" type="html">
@@ -71,10 +71,15 @@
 			<field name="context">{'search_default_is_not_read':True}</field>
 		</record>
 
-       	<menuitem id="ocr_menu" name="Unterlagen"/>
+       	<menuitem id="archive_menu" name="Unterlagen"/>
+
+
+		<record id="mail.mail_feeds_main" model="ir.ui.menu">
+			<field name="groups_id" eval="[(6, 0, [ref('archive.group_nobody')] )]"/>
+		</record>
 
 		<!-- Properties menu -->
-		<menuitem id="overview_menu" name="Übersicht" parent="ocr_menu"
+		<menuitem id="overview_menu" name="Übersicht" parent="archive_menu"
 			sequence="100"  />
 			<menuitem id="overview_submenu" name="Übersicht" parent="overview_menu"
 				sequence="120"  action="main_view_action"  />
@@ -84,9 +89,9 @@
 				sequence="150"  action="calendar_view_action"  />
 
 
-        <menuitem id="admin_menu" name="Administration" parent="ocr_menu"
-			sequence="200"/>
-		<menuitem id="approve_menu_item" name="Nicht bestätigt"
+        <menuitem id="admin_menu" name="Administration" parent="archive_menu"
+			sequence="200"  groups="archive.group_local_manager" />
+			<menuitem id="approve_menu_item" name="Nicht bestätigt"
 			parent="admin_menu" action="approve_list_action" sequence="250"/>
 			<menuitem id="contact_menu_item" name="Kontakte"
 				parent="admin_menu" action="contact_list_action" sequence="270"/>

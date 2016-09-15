@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="archive_user_form_view">
+			<field name="name">res.users</field>
+			<field name="model">res.users</field>
+			<field name="inherit_id" ref="base.view_users_simple_form"/>
+			<field name="arch" type="xml">
+
+				<!--<field name="name" position="attributes">-->
+                	<!--<attribute name="string">Name</attribute>-->
+        		<!--</field>-->
+				<!--<field name="name" position="replace"/>-->
+
+				<field name="name" position="after">
+
+					<label for="surname" />
+					<h1>
+						<field name="surname"/>
+					</h1>
+
+				</field>
+
+
+
+
+				<field name="company_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+					<attribute name="required">False</attribute>
+                </field>
+
+				<field name="phone" position="replace"/>
+				<field name="groups_id" position="replace"/>
+				<field name="fax" position="after">
+						<field name="birthday"/>
+						<field name="place_of_birth"/>
+						<field name="name_of_birth"/>
+						<field name="nationality"/>
+						<!--<field name="passport_id"/>-->
+                </field>
+
+			</field>
+		</record>
+	</data>
+</openerp>

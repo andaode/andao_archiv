@@ -4,7 +4,7 @@
 
         <record model="ir.ui.view" id="main_search_view">
             <field name="name">main_view_view.search</field>
-            <field name="model">ocr.document</field>
+            <field name="model">archive.document</field>
             <field name="priority" eval="2" />
             <field name="arch" type="xml">
                 <search>
@@ -21,7 +21,7 @@
 
         <record model="ir.ui.view" id="main_tree_view">
             <field name="name">main_view_view.tree</field>
-            <field name="model">ocr.document</field>
+            <field name="model">archive.document</field>
             <field name="arch" type="xml">
                 <tree string="Main view">
                     <field name="doc_name" />
@@ -35,7 +35,7 @@
 
         <record model="ir.ui.view" id="main_view_view">
             <field name="name">main_view_view.form</field>
-            <field name="model">ocr.document</field>
+            <field name="model">archive.document</field>
             <field name="arch" type="xml">
                 <form string="Main view">
                      <header>
@@ -49,7 +49,7 @@
 
                     <group string="Info">
 							<group>
-                                     <field name="owner" required="1"  />
+                                     <field name="owner" />
                                      <field name="doc_name" />
                                      <field name="reminder" />
                             </group>
@@ -80,7 +80,7 @@
 
         <record model="ir.ui.view" id="view_external_id">
         <field name="name">View Name</field>
-        <field name="model">ocr.document</field>
+        <field name="model">archive.document</field>
         <field name="type">kanban</field>
         <field name="arch" type="xml">
              <kanban>
@@ -90,7 +90,7 @@
                      <t t-name="kanban-box">
                         <div class="oe_product_vignette">
                             <div class="oe_product_img">
-                            <a type="edit"><img t-att-src="kanban_image('ocr.document', 'image_small', record.id.value)" class="oe_product_photo"/></a>
+                            <a type="edit"><img t-att-src="kanban_image('archive.document', 'image_small', record.id.value)" class="oe_product_photo"/></a>
                             </div>
                             <div class="oe_product_desc">
                                 <h4><a type="edit" href="#"><field name="doc_name"></field></a></h4>
@@ -112,8 +112,8 @@
         </record>
 
          <record id="reminder_calendar_view" model="ir.ui.view">
-                <field name="name">ocr.calendar</field>
-                <field name="model">ocr.document</field>
+                <field name="name">archive.calendar</field>
+                <field name="model">archive.document</field>
                 <field name="arch" type="xml">
                        <calendar  string="Reminder" color="doc_name" date_start="reminder" date_stop="reminder" >
                             <field name="doc_name"/>

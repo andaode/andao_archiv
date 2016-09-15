@@ -7,6 +7,7 @@ import logging
 from PIL import Image as dupa
 from pytesser import *
 import cStringIO as StringIO
+from openerp.exceptions import ValidationError
 _logger = logging.getLogger(__name__)
 
 
@@ -14,7 +15,7 @@ _logger = logging.getLogger(__name__)
 
 
 class Document(models.Model):
-    _name = 'ocr.document'
+    _name = 'archive.document'
     _inherit = 'mail.thread'
     _description = 'Archive document'
     _order = 'scanned_on desc'
@@ -25,7 +26,7 @@ class Document(models.Model):
     image_small = fields.Binary(string='Bild', attachment=True, readonly=True)
     #image_medium = fields.Binary(string='Bild', attachment=True, readonly=True)
     image_big = fields.Binary(string='Bild', attachment=True, readonly=True)
-
+    company_id = fields.Many2one('res.company', string="Unternehmen")
     doc_text = fields.Text()
     owner = fields.Many2one('res.users', ondelete='set null', string="User")
     scanned_on = fields.Date(string='Gescannt am')
@@ -58,14 +59,18 @@ class Document(models.Model):
     @api.multi
     def make_approved(self):
         self.ensure_one()
-        self.state = 'open'
+        if self.owner:
+            if not self.doc_name:
+                self.env.cr.execute('SELECT count(name) FROM archive_document WHERE owner = %s', (self.owner.id,))
+                amount = str(self.env.cr.fetchall()[0][0] or 0)
+                new_number = int(amount) + 1
+                self.doc_name = 'Dokument ' + str(new_number)
+            self.state = 'open'
+        else:
+            raise ValidationError(_("Das Dokument muss einen Besitzer haben"))
 
     @api.model
     def create(self, vals):
-        self.env.cr.execute('SELECT count(name) FROM ocr_document WHERE owner = %s', (vals['owner'],))
-        amount = str(self.env.cr.fetchall()[0][0] or 0)
-        new_number = int(amount) + 1
-        vals['name'] = 'Dokument ' + str(new_number)
         #image_stream = StringIO.StringIO(vals['file_upload'].decode('base64'))
         vals['image_small'] = tools.image_resize_image_medium(vals['file_upload'])
         #vals['image_medium'] = tools.image_resize_image_small(vals['file_upload'])
@@ -76,14 +81,18 @@ class Document(models.Model):
         if not vals['received_on']:
             vals['received_on'] = str(datetime.datetime.now())[:10]
         vals['state'] = 'not_approved'
-
+        vals['company_id'] = self.env.user.company_id.id
         #image_file = '/home/andy/odoo-8.0/pytesser/phototest.tif'
         ocr_text = self.ocr_file(vals['file_upload'])
+        owner = self.find_owner(ocr_text, self.env.user.company_id.id)
         vals['doc_text'] = ocr_text
-        if not vals['doc_name']:
-            vals['doc_name'] = 'Dokument ' + str(new_number)
         agr = super(Document, self).create(vals)
         return agr
+
+
+    @api.multi
+    def find_owner(self, ocr_text, company_id):
+        pass
 
     def ocr_file(self, file_binary):
         image_stream = StringIO.StringIO(file_binary.decode('base64'))
