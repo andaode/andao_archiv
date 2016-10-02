@@ -7,9 +7,9 @@
 			<field name="inherit_id" ref="base.view_users_simple_form"/>
 			<field name="arch" type="xml">
 
-				<!--<field name="name" position="attributes">-->
-                	<!--<attribute name="string">Name</attribute>-->
-        		<!--</field>-->
+				<field name="name" position="attributes">
+                	<attribute name="string">Username</attribute>
+        		</field>
 				<!--<field name="name" position="replace"/>-->
 
 				<field name="email" position="before">

@@ -23,7 +23,7 @@
             <field name="name">main_view_view.tree</field>
             <field name="model">archive.document</field>
             <field name="arch" type="xml">
-                <tree string="Main view">
+                <tree string="Main view" share="false">
                     <field name="doc_name" />
                     <field name="scanned_on" />
                     <field name="received_on"  />
@@ -37,7 +37,7 @@
             <field name="name">main_view_view.form</field>
             <field name="model">archive.document</field>
             <field name="arch" type="xml">
-                <form string="Main view">
+                <form string="Main view" >
                      <header>
                         <button name="make_is_read" type="object" string="Gelesen/Ungelesen"
                                 class="oe_highlight" attrs="{'invisible': [('state', '=', 'not_approved')]}"/>
@@ -48,21 +48,24 @@
                      </header>
 
                     <group string="Info">
+
 							<group>
+                                <!--<field name="files" />-->
                                      <field name="owner" />
                                      <field name="doc_name" />
                                      <field name="reminder" />
                             </group>
                             <group>
+                          <!--<field name="file_upload"/>-->
                                 <field name="scanned_on" />
                                 <field name="received_on"  />
+
                             </group>
                     </group>
 
-                        <field name="file_upload" class="oe_edit_only"/>
-                        <!--<field name="file_upload" widget="image" class="oe_edit_only" filename="image_fname"/>-->
+                        <field name="file_upload" class="oe_edit_only" filename="image_fname"/>
 
-                        <field name="image_fname" invisible="1"/>
+                        <field name="image_filename" invisible="1"/>
                         <field name="image_big" widget="image" />
 
                     <notebook>
@@ -70,6 +73,7 @@
                                   <field name="doc_text"  />
                            </page>
                   </notebook>
+
                     <div class="oe_chatter">
 	                    <field name="message_follower_ids" widget="mail_followers"/>
 	                    <field name="message_ids" widget="mail_thread"/>
@@ -78,35 +82,37 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_external_id">
-        <field name="name">View Name</field>
+        <record model="ir.ui.view" id="_kanban_view_id">
+        <field name="name">main_view_view.kanban</field>
         <field name="model">archive.document</field>
         <field name="type">kanban</field>
         <field name="arch" type="xml">
-             <kanban>
+             <kanban create="false">
                 <!--<field name="owner"/>-->
                 <!--<field name="scanned_on"/>-->
+
                 <templates>
-                     <t t-name="kanban-box">
-                        <div class="oe_product_vignette">
-                            <div class="oe_product_img">
-                            <a type="edit"><img t-att-src="kanban_image('archive.document', 'image_small', record.id.value)" class="oe_product_photo"/></a>
-                            </div>
-                            <div class="oe_product_desc">
-                                <h4><a type="edit" href="#"><field name="doc_name"></field></a></h4>
-                                <ul>
-                                    <!--<li><field name="doc_name"></field></li>-->
-                                    <li>Gescannt am: <field name="scanned_on"></field></li>
-                                    <li>Status: <field name="state"></field></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <script>
-                            $('.oe_product_photo').load(function() { if($(this).width() > $(this).height()) { $(this).addClass('oe_product_photo_wide') } });
-                        </script>
-                        <div></div>
-                    </t>
-                </templates>
+                <t t-name="kanban-box">
+                <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                    <div class="oe_product_img">
+                    <a  href="#"><img t-att-src="kanban_image('archive.document', 'image_small', record.id.value)" class="oe_product_photo"/></a>
+                    </div>
+                    <div class="oe_product_desc">
+                        <h4><a type="edit" href="#"><field name="doc_name"></field></a></h4>
+                        <ul>
+                            <!--<li><field name="doc_name"></field></li>-->
+                            <li>Gescannt am: <field name="scanned_on"></field></li>
+                            <li>Status: <field name="state"></field></li>
+                        </ul>
+                    </div>
+                </div>
+                <script>
+                    $('.oe_product_photo').load(function() { if($(this).width() > $(this).height()) { $(this).addClass('oe_product_photo_wide') } });
+                </script>
+                <div></div>
+            </t>
+        </templates>
+
             </kanban>
         </field>
         </record>
@@ -115,7 +121,7 @@
                 <field name="name">archive.calendar</field>
                 <field name="model">archive.document</field>
                 <field name="arch" type="xml">
-                       <calendar  string="Reminder" color="doc_name" date_start="reminder" date_stop="reminder" >
+                       <calendar  string="Reminder" color="doc_name" date_start="reminder" date_stop="reminder" create="false">
                             <field name="doc_name"/>
                        </calendar>
 

@@ -4,10 +4,12 @@ from openerp import osv, models, fields, api, tools, _
 import base64
 import datetime
 import logging
-from PIL import Image as dupa
+from PIL import Image as ImagePil
 from pytesser import *
 import cStringIO as StringIO
 from openerp.exceptions import ValidationError
+from ocr_recognition import TextRecognition
+import StringIO
 _logger = logging.getLogger(__name__)
 
 
@@ -21,8 +23,9 @@ class Document(models.Model):
     _order = 'scanned_on desc'
     name = fields.Char(string='Dokument ID')
     doc_name = fields.Char(string='Dokument')
+
     file_upload = fields.Binary(string='Datei', attachment=True)
-    image_fname = fields.Char(string='Dateiname')
+    image_filename = fields.Char(string='Dateiname')
     image_small = fields.Binary(string='Bild', attachment=True, readonly=True)
     #image_medium = fields.Binary(string='Bild', attachment=True, readonly=True)
     image_big = fields.Binary(string='Bild', attachment=True, readonly=True)
@@ -66,15 +69,20 @@ class Document(models.Model):
                 new_number = int(amount) + 1
                 self.doc_name = 'Dokument ' + str(new_number)
             self.state = 'open'
+            self.send_email(self.owner.email)
         else:
             raise ValidationError(_("Das Dokument muss einen Besitzer haben"))
 
     @api.model
     def create(self, vals):
         #image_stream = StringIO.StringIO(vals['file_upload'].decode('base64'))
+        file_upload_decoded = vals['file_upload'].decode('base64')
+        jpg_str = self.convert_to_jpg(file_upload_decoded)
+
+        vals['file_upload'] = base64.b64encode(jpg_str)
         vals['image_small'] = tools.image_resize_image_medium(vals['file_upload'])
-        #vals['image_medium'] = tools.image_resize_image_small(vals['file_upload'])
         vals['image_big'] = tools.image_resize_image_big(vals['file_upload'])
+
         vals['is_not_read'] = True
         if not vals['scanned_on']:
             vals['scanned_on'] = str(datetime.datetime.now())[:10]
@@ -82,21 +90,42 @@ class Document(models.Model):
             vals['received_on'] = str(datetime.datetime.now())[:10]
         vals['state'] = 'not_approved'
         vals['company_id'] = self.env.user.company_id.id
-        #image_file = '/home/andy/odoo-8.0/pytesser/phototest.tif'
-        ocr_text = self.ocr_file(vals['file_upload'])
-        owner = self.find_owner(ocr_text, self.env.user.company_id.id)
+
+        ocr_obj = self.env['archive.ocr']
+        ocr_text = ocr_obj.ocr_file(file_upload_decoded)
+        owner = ocr_obj.find_owner(ocr_text.decode('utf-8'), self.env.user.company_id.id)
+        if owner:
+            vals['owner'] = owner
+
         vals['doc_text'] = ocr_text
         agr = super(Document, self).create(vals)
         return agr
 
+    @api.model
+    def send_email(self, email_to):
+        values = {
+                 'subject': 'Neues Dokument erhalten!',
+                 'body_html': 'BEsuchen Sie bitte <h>www.andao.de/archive</h> um das Dokumen zu sehen',
+                 'email_to': email_to,
+                 'email_from': 'info@andao.de',
+                }
+        mail_obj = self.env['mail.mail']
+        msg_id = mail_obj.create(values)
+        if msg_id:
+            mail_obj.send([msg_id])
+        return True
 
-    @api.multi
-    def find_owner(self, ocr_text, company_id):
-        pass
 
-    def ocr_file(self, file_binary):
-        image_stream = StringIO.StringIO(file_binary.decode('base64'))
-        #im = dupa.open('/home/andy/' + file_name)
-        im = dupa.open(image_stream)
-        text = pytesser.image_to_string(im)
-        return text
+    def convert_to_jpg(self, file_upload_decoded):
+        image_stream = StringIO.StringIO(file_upload_decoded)
+        im = ImagePil.open(image_stream)
+
+        jpg_stream = StringIO.StringIO()
+        im.save(jpg_stream, format="JPEG")
+        jpg_str = ''
+
+        for txt in jpg_stream.buflist:
+            jpg_str += txt
+
+        jpg_stream.close()
+        return  jpg_str

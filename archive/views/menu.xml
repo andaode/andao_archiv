@@ -21,17 +21,18 @@
 			<field name="name">Overview Kanban</field>
 			<field name="res_model">archive.document</field>
 			<field name="view_type">form</field>
-			<field name="view_mode">kanban</field>
+			<field name="view_mode">kanban,form</field>
 			<field name="help" type="html">
 				<p class="oe_view_nocontent_create">
 					Click to add an entry in your address book.
 				</p>
 			</field>
+			<!--<field name="domain">[('state','!=','not_approved')]</field>-->
 			<field name="context">{'search_default_is_not_read':True}</field>
 
 		</record>
 
-		  <record id="calendar_view_action" model="ir.actions.act_window">
+		<record id="calendar_view_action" model="ir.actions.act_window">
 			<field name="name">Overview Calendar</field>
 			<field name="res_model">archive.document</field>
 			<field name="view_type">form</field>
@@ -40,6 +41,7 @@
 				<p class="oe_view_nocontent_create">
 					Click to add an entry in your address book.
 				</p>
+				<field name="domain">[('state','!=','not_approved')]</field>
 			</field>
 
 		</record>
@@ -57,7 +59,7 @@
 			</field>
 		</record>
 
-		  <record id="approve_list_action" model="ir.actions.act_window">
+		<record id="approve_list_action" model="ir.actions.act_window">
 			<field name="name">Overview</field>
 			<field name="res_model">archive.document</field>
 			<field name="view_type">form</field>
@@ -68,7 +70,6 @@
 				</p>
 			</field>
 			  <field name="domain">[('state','=','not_approved')]</field>
-			<field name="context">{'search_default_is_not_read':True}</field>
 		</record>
 
        	<menuitem id="archive_menu" name="Unterlagen"/>
